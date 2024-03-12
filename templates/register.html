@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register for an Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="login-container"> <!-- Use the same container class as the login page -->
+        <h2>Register for an Account</h2>
+        <form action="{{ url_for('register') }}" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required minlength="4">
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required minlength="4">
+            <input type="submit" value="Register">
+        </form>
+    </div>
+</body>
+</html>

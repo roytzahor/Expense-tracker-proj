@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: et-helm
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  source:
+    repoURL: https://gitlab.com/sela-tracks/1101/roy/expenses-tracker.git
+    targetRevision: HEAD  # Use HEAD for the latest commit on the main branch, or specify a specific branch, tag, or commit SHA.
+    path: expense-tracker-helm  # Assuming this is the path relative to the root of your Git repo
+    helm:
+      valueFiles:
+        - values.yaml  # Only necessary if this is a custom values file. Otherwise, this can be omitted to use the chart's default values.yaml.
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

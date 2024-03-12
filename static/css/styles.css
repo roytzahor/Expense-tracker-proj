@@ -1,0 +1,260 @@
+/* Reset some basic elements */
+body, h1, h2, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Base styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+    background-image: url('/static/images/stock-market.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+
+/* Table container */
+.current-month-expense-container {
+    overflow-x: auto;
+    margin: 20px 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    background-color: #ffffff; /* Solid white */
+}
+
+/* Table element */
+.current-month-expense {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+/* Table Headers */
+.current-month-expense th {
+    background-color: #0056b3; /* Blue background for headers */
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+/* Table Cells */
+.current-month-expense td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.current-month-expense tr {
+    background-color: white;
+}
+
+/* Responsive design for smaller screens */
+@media screen and (max-width: 768px) {
+    .current-month-expense th, .current-month-expense td {
+        padding: 10px 5px;
+    }
+
+    .current-month-expense th {
+        font-size: 14px;
+    }
+}
+
+/* Header styles */
+header {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+}
+
+/* Content and paragraph styles */
+.content, .user-list, .form-container, .login-container {
+    text-align: center;
+}
+
+p {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+/* List styles */
+.user-list {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.user-list h2 {
+    font-size: 1.5rem;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+/* Form styles */
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Input styles */
+input[type="text"],
+input[type="password"],
+input[type="submit"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Label styles */
+label {
+    display: block;
+    margin: 10px 0;
+}
+
+/* Form container styles */
+.form-container, .login-container {
+    margin: 0 auto;
+    padding: 50px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+/* Form header styles */
+.form-container h2, .login-container h2 {
+    margin-bottom: 20px;
+}
+
+/* Button styles */
+.button, .logout-button, .remove-account-btn, .delete-expense, .remove-button {
+    background-color: #007bff; /* Light blue background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* Button hover states */
+.button:hover, .logout-button:hover, .remove-account-btn:hover, .delete-expense:hover, .remove-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Red button styles */
+.logout-button, .remove-account-btn, .delete-expense, .remove-button {
+    background-color: #ff4d4d; /* Red background */
+}
+
+/* Red button hover states */
+.logout-button:hover, .remove-account-btn:hover, .delete-expense:hover, .remove-button:hover {
+    background-color: #cc0000; /* Darker red on hover */
+}
+
+/* Footer styles */
+footer {
+    text-align: center;
+    padding: 20px; /* Add padding for visual spacing */
+}
+
+.footer-buttons {
+    display: flex;
+    justify-content: center; /* This will center the buttons */
+    align-items: center; /* Align items vertically */
+    gap: 20px; /* Adjust the gap between buttons as needed */
+}
+
+.button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+
+/* Style for logout and remove account buttons */
+.logout-button, .remove-account-btn {
+    background-color: #ff4d4d; /* Red background */
+    color: white;
+    margin: 0; /* Remove margins if any */
+}
+
+.logout-button:hover, .remove-account-btn:hover {
+    background-color: #cc0000; /* Darker red on hover */
+}
+
+
+/* Style the table with a basic design */
+table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 8px;
+  }
+  
+  th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  tr:hover {
+    background-color: #ddd;
+  }
+  
+  /* Add any other styles that were originally present for the table */
+  

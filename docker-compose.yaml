@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  app:
+    image: roytzahor/expense-tracker:latest
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/expenses_tracker_db
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=expenses_tracker_db
+    volumes:
+      - mongo_data:/data/db
+
+  app-tests: 
+    build: 
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - TEST_MONGODB_URI=mongodb://mongo:27017/expeses_tracker_db
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
+

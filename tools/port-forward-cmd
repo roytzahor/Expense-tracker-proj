@@ -1,0 +1,12 @@
+kubectl port-forward svc/et-helm-expense-tracker-app 5000:5000 -n dev > /dev/null 2>&1 &
+
+kubectl port-forward svc/argocd-server -n argocd 4001:443 > /dev/null 2>&1 &
+
+kubectl port-forward svc/mongo 27017:27017 > /dev/null 2>&1 &
+
+kubectl port-forward svc/grafana -n monitoring 3000:80 > /dev/null 2>&1 &
+
+kubectl port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090 -n monitoring > /dev/null 2>&1 &
+
+kubectl port-forward svc/prometheus-kube-prometheus-alertmanager 9093:9093 -n monitoring > /dev/null 2>&1 &
+

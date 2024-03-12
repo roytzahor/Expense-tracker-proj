@@ -1,0 +1,19 @@
+# Use an official Python runtime as a base image
+FROM python:3.8-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the necessary files for running pytest
+COPY test_app.py app.py db.py run_tests.sh ./
+COPY templates/ templates/
+COPY requirements.txt ./
+
+# Install dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Make sure the script is executable
+RUN chmod +x run_tests.sh
+
+# Run tests when the container launches
+CMD ["./run_tests.sh"]

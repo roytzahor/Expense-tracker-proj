@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            width: 50%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Your Expense Tracker Dashboard, {{ username }}!</h1>
+    </header>
+
+    <div class="chart-container">
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <section>
+        <h2>Your Current Month Expenses</h2>
+        <div class="summary-container">
+            <table class="current-month-expense">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Notes</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.category }}</td>
+                        <td>${{ "%.2f"|format(expense.amount) }}</td>
+                        <td>{{ expense.notes }}</td>
+                        <td>{{ expense.date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <button onclick="removeExpense('{{ expense._id }}')" class="remove-button">Remove</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5">No expenses recorded for this month.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+        </div>
+    </section>
+      
+    <section>
+        <h2>Add New Expense</h2>
+        <form action="{{ url_for('add_expense') }}" method="POST">
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" required>
+    
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" step="0.01" required>
+    
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+    
+            <label for="notes">Notes:</label>
+            <textarea id="notes" name="notes"></textarea>
+    
+            <input type="submit" value="Add Expense" class="button">
+        </form>
+    </section>
+    
+    <!-- Logout and Remove Account buttons -->
+    <footer>
+        <div class="footer-buttons">
+            <!-- Logout Button -->
+            <form action="{{ url_for('logout') }}" method="post" class="footer-form">
+                <button type="submit" class="button logout-button">Logout</button>
+            </form>
+    
+            <!-- Remove Account Button -->
+            <form action="{{ url_for('remove_account') }}" method="post" class="footer-form" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
+                <button type="submit" class="button remove-account-btn">Remove Account</button>
+            </form>
+        </div>
+    </footer>
+    
+    <script>
+        let myPieChart; // Define the chart variable globally so it can be accessed in both functions
+
+        function removeExpense(expenseId) {
+            if (confirm('Are you sure you want to delete this expense?')) {
+                fetch(`/remove_expense/${expenseId}`, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // If the expense is successfully removed, find the row in the HTML
+                        const expenseRow = document.getElementById(`expense-row-${expenseId}`);
+                        if (expenseRow) {
+                            // Remove the row from the table
+                            expenseRow.remove();
+                            
+                            // Optionally, if you want to show a message to the user
+                            displaySuccessMessage('Expense removed successfully.');
+                        }
+                        window.location.reload();
+                    } else {
+                        // If the server responded with 'success: false', show an alert or message to the user
+                        displayErrorMessage('Failed to delete the expense.');
+                    }
+                })
+                .catch(error => {
+                    // If there was an error during the fetch operation, log it to the console
+                    console.error('Error during fetch operation:', error);
+                    displayErrorMessage('Error removing expense. Please try again.');
+                });
+            }
+        }
+
+        // Helper functions to show messages to the user
+        function displaySuccessMessage(message) {
+            // You might have a div for messages, show the message there
+            const messageDiv = document.getElementById('messageDiv');
+            messageDiv.innerHTML = message;
+            messageDiv.classList.add('success'); // Assuming you have CSS styles for 'success'
+        }
+
+        function displayErrorMessage(message) {
+            // You might have a div for messages, show the message there
+            const messageDiv = document.getElementById('messageDiv');
+            messageDiv.innerHTML = message;
+            messageDiv.classList.add('error'); // Assuming you have CSS styles for 'error'
+        }
+
+        // This is a placeholder function. You'll need to implement the logic for updating the pie chart based on your current implementation.
+        function updatePieChart() {
+            // Fetch the new expense data and update the chart
+            fetch('/get_expense_data')
+                .then(response => response.json())
+                .then(data => {
+                    // Assuming you have a Chart.js chart instance named `myPieChart`
+                    myPieChart.data.datasets[0].data = data.map(expense => expense.amount);
+                    myPieChart.update();
+                });
+        }
+
+        function processChartData(data) {
+            const chartData = {
+                labels: data.map(item => item._id), // Categories
+                datasets: [{
+                data: data.map(item => item.total), // Totals for each category
+                // ... rest of your chart dataset properties
+                }]
+            };
+
+            // Assuming you have a Chart.js instance called 'myPieChart'
+            myPieChart.data = chartData;
+            myPieChart.update();  // Update the chart
+            }
+
+        async function fetchAndRenderChart() {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            try {
+                const response = await fetch('/expense_data_by_category');
+                const data = await response.json(); // The endpoint should now return the correct array structure
+
+                const chartData = {
+                    labels: data.map(d => d.category), // Updated to use 'category' instead of '_id'
+                    datasets: [{
+                        data: data.map(d => d.total),
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                        ],
+                        hoverOffset: 4
+                    }]
+                };
+
+                if (myPieChart) {
+                    myPieChart.data = chartData;
+                    myPieChart.update();
+                } else {
+                    myPieChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Expenses by Category'
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchAndRenderChart);
+    </script>
+</body>
+</html>

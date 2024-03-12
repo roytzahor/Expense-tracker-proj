@@ -1,0 +1,29 @@
+additionalPrometheusRulesMap:
+  custom-dev-namespace-rules:
+    groups:
+    - name: dev-namespace-rules
+      rules:
+      - alert: DevNamespaceUnderOneRunningPod
+        expr: count(kube_pod_info{namespace="dev", pod=~"et-helm-expense-tracker-app-.*"}) < 1
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Less than one running pod in the dev namespace"
+          description: "This alert fires if there are less than one pods starting with et-helm-expense-tracker-app- in the 'Ready' state in the dev namespace for more than 2 minutes."
+      - alert: DevNamespacePodCpuUsageHigh
+        expr: sum(rate(container_cpu_usage_seconds_total{namespace="dev", pod=~"et-helm-expense-tracker-app-.*", container!="", container!="POD"}[5m])) by (pod) / sum(kube_pod_container_resource_limits_cpu_cores{namespace="dev", pod=~"et-helm-expense-tracker-app-.*"}) by (pod) > 0.8
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage in dev namespace pod"
+          description: "This alert fires if any pod starting with et-helm-expense-tracker-app- in the dev namespace has CPU usage over 80% for more than 2 minutes."
+      - alert: DevNamespacePodCpuUsageLow
+        expr: sum(rate(container_cpu_usage_seconds_total{namespace="dev", pod=~"et-helm-expense-tracker-app-.*", container!="", container!="POD"}[5m])) by (pod) / sum(kube_pod_container_resource_limits_cpu_cores{namespace="dev", pod=~"et-helm-expense-tracker-app-.*"}) by (pod) < 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low CPU usage in dev namespace pod"
+          description: "This alert fires if any pod starting with et-helm-expense-tracker-app- in the dev namespace has CPU usage below 5% for more than 2 minutes."

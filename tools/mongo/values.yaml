@@ -1,0 +1,9 @@
+image:
+  repository: mongo
+  tag: "latest"
+  pullPolicy: Always
+
+metadata:
+  annotations:
+    meta.helm.sh/release-name: mongodb
+    meta.helm.sh/release-namespace: default
