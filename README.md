@@ -7,7 +7,7 @@ Welcome to the Expenses Tracker project! This application is designed to help us
 
 <div align="center"><img src="images/home.png" alt="Home" width="500" height="300"></div>
 
-The home page greets you with a summary of your financial health, showing your recent transaction history and quick stats at a glance.
+The home page greets you with a summary of existing users and allow you to connect to your account
 
 ### Login
 
@@ -19,7 +19,7 @@ Secure access to your expense tracker with a robust login system. Manage your pe
 
 <div align="center"><img src="images/dashboard.png" alt="Dashboard" width="500" height="300"></div>
 
-The dashboard provides a quick overview of your expenses. It visualizes your spending patterns over time, helping you understand where your money goes.
+The dashboard provides a quick overview of your expenses. It visualizes your spending patterns by category, or check your balance on the current month, helping you understand where your money goes.
 
 ### Add Expenses
 
@@ -38,14 +38,9 @@ This section allows you to view all your recorded expenses, edit them, or delete
 
 Our project leverages a comprehensive set of technologies and tools to ensure high-quality development, continuous integration, and robust deployment practices. Below, you'll find a detailed overview of our tech stack, emphasizing our DevOps processes:
 
-### Version Control
-
-- **GitLab**: A single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security.
-  - <div align="center"><img src="/images/gitlab.png" alt="GitLab Icon" height="100"></div>
-
 ### Continuous Integration and Delivery
 
-- **Jenkins**: An open-source automation server that enables developers around the world to reliably build, test, and deploy their software. Jenkins orchestrates our CI/CD pipeline, integrating seamlessly with GitLab for a smooth development process.
+- **Jenkins**: An open-source automation server that enables developers around the world to reliably build, test, and deploy their software. Jenkins orchestrates our CI/CD pipeline, integrating seamlessly with GitHab for a smooth development process. in this project used with multibranch pipeline t orun diffrent workflows.
   - <div align="center"><img src="/images/jenkins.png" alt="Jenkins Icon" height="100"></div>
 
 ### Containerization and Artifact Storage
