@@ -40,9 +40,10 @@ jobs:
 
     - name: Run tests
       run: |
-        docker run -d --name mongodb-test --network-alias mongodb-test mongo:latest
+        docker network create expense-tracker-net
+        docker run -d --name mongodb-test --network expense-tracker-net mongo:latest
         sleep 10
-        docker run --name expense-tracker-test-container -e MONGO_URI=mongodb://mongodb-test:27017/expenses_tracker_db expense-tracker-test:${{ github.run_number }}
+        docker run --name expense-tracker-test-container --network expense-tracker-net -e MONGO_URI=mongodb://mongodb-test:27017/expenses_tracker_db expense-tracker-test:${{ github.run_number }}
 
     - name: Push Docker images
       if: github.ref == 'refs/heads/main'
@@ -61,19 +62,14 @@ jobs:
         message: 'CI/CD Pipeline has finished running tests.'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+
   cleanup:
+    if: always()
     runs-on: ubuntu-latest
     needs: [build-and-test, handle-pull-request]
-    if: always()
     steps:
     - name: Cleanup MongoDB and test containers
       run: |
         docker rm -f mongodb-test
         docker rm -f expense-tracker-test-container
         docker network rm expense-tracker-net
-
-    - name: Cleanup workspace
-      uses: geekyeggo/delete-artifact@v1
-      with:
-        name: ${{ secrets.DOCKER_IMAGE_NAME }}
-        token: ${{ secrets.GITHUB_TOKEN }}
