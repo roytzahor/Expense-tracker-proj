@@ -5,13 +5,14 @@ import os
 from datetime import datetime
 from bson import ObjectId
 import uuid
+from bson.son import SON
 
 # Setup basic logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Define the default MongoDB URI
-default_mongo_uri = "mongodb://host.docker.internal:27017/expenses_tracker_db"
+default_mongo_uri = "mongodb://localhost:27017/"
 
 # Initialize the MongoDB client with environment variables or use the default
 mongo_uri = os.getenv('MONGO_URI', default_mongo_uri)
@@ -114,3 +115,20 @@ def get_current_month_expenses(user_id):
         'date': {'$gte': start_date, '$lt': end_date}
     }
     return list(expenses_collection.find(query).sort("date", -1))
+
+
+def get_monthly_expenses_by_category(user_id, year, month):
+    pipeline = [
+        {"$match": {"user_id": user_id, "date": {"$gte": datetime(year, month, 1), "$lt": datetime(year, month+1, 1)}}},
+        {"$group": {"_id": "$category", "total": {"$sum": "$amount"}}},
+        {"$sort": SON([("total", -1), ("_id", -1)])}
+    ]
+    return list(expenses_collection.aggregate(pipeline))
+
+def get_average_expenses_by_category(user_id, year, month):
+    pipeline = [
+        {"$match": {"user_id": user_id, "date": {"$lt": datetime(year, month, 1)}}},
+        {"$group": {"_id": "$category", "average": {"$avg": "$amount"}}},
+        {"$sort": SON([("average", -1), ("_id", -1)])}
+    ]
+    return list(expenses_collection.aggregate(pipeline))

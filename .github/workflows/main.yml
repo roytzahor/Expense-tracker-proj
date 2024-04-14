@@ -1,0 +1,79 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: --network-alias mongodb-test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Application Docker image
+      run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/expense-tracker:latest --no-cache
+
+    - name: Build Test Docker image
+      run: docker build . --file Dockerfile.test --tag expense-tracker-test:${{ github.run_number }}
+
+    - name: Run tests
+      run: |
+        docker run -d --name mongodb-test --network-alias mongodb-test mongo:latest
+        sleep 10
+        docker run --name expense-tracker-test-container -e MONGO_URI=mongodb://mongodb-test:27017/expenses_tracker_db expense-tracker-test:${{ github.run_number }}
+
+    - name: Push Docker images
+      if: github.ref == 'refs/heads/main'
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/expense-tracker:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/expense-tracker:latest
+
+  handle-pull-request:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    steps:
+    - name: Comment on PR
+      uses: thollander/actions-comment-pull-request@v1
+      with:
+        message: 'CI/CD Pipeline has finished running tests.'
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [build-and-test, handle-pull-request]
+    if: always()
+    steps:
+    - name: Cleanup MongoDB and test containers
+      run: |
+        docker rm -f mongodb-test
+        docker rm -f expense-tracker-test-container
+        docker network rm expense-tracker-net
+
+    - name: Cleanup workspace
+      uses: geekyeggo/delete-artifact@v1
+      with:
+        name: ${{ secrets.DOCKER_IMAGE_NAME }}
+        token: ${{ secrets.GITHUB_TOKEN }}

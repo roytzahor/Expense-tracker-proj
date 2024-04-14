@@ -1,58 +1,73 @@
-/* Reset some basic elements */
+:root {
+    --main-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --main-bg-color: #f0f2f5;
+    --main-text-color: #333;
+    --main-padding: 20px;
+    --header-bg-color: #007bff;
+    --header-text-color: #ffffff;
+    --table-header-bg-color: #0056b3;
+    --table-header-text-color: #ffffff;
+    --table-cell-padding: 10px;
+    --table-border-color: #ddd;
+    --button-bg-color: #007bff;
+    --button-text-color: #ffffff;
+    --button-hover-bg-color: #0056b3;
+    --danger-button-bg-color: #ff4d4d;
+    --danger-button-hover-bg-color: #cc0000;
+}
+
 body, h1, h2, p, ul, li {
     margin: 0;
     padding: 0;
 }
 
-/* Base styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+    font-family: var(--main-font);
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
     line-height: 1.6;
-    padding: 20px;
+    padding: var(--main-padding);
     background-image: url('/static/images/stock-market.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
 
-
-/* Table container */
 .current-month-expense-container {
     overflow-x: auto;
     margin: 20px 0;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border-radius: 8px;
-    background-color: #ffffff; /* Solid white */
+    background-color: #ffffff;
 }
 
-/* Table element */
 .current-month-expense {
     width: 100%;
     border-collapse: collapse;
     margin: 0 auto;
 }
 
-/* Table Headers */
 .current-month-expense th {
-    background-color: #0056b3; /* Blue background for headers */
-    color: white;
-    padding: 10px;
+    background-color: var(--table-header-bg-color);
+    color: var(--table-header-text-color);
+    padding: var(--table-cell-padding);
     text-align: left;
 }
 
-/* Table Cells */
 .current-month-expense td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+    padding: var(--table-cell-padding);
+    border-bottom: 1px solid var(--table-border-color);
 }
 
 .current-month-expense tr {
     background-color: white;
+    transition: background-color 0.3s ease;
 }
 
-/* Responsive design for smaller screens */
+.current-month-expense tr:hover {
+    background-color: #f9f9f9;
+}
+
 @media screen and (max-width: 768px) {
     .current-month-expense th, .current-month-expense td {
         padding: 10px 5px;
@@ -63,11 +78,10 @@ body {
     }
 }
 
-/* Header styles */
 header {
-    background-color: #007bff;
-    color: #ffffff;
-    padding: 20px 0;
+    background-color: var(--header-bg-color);
+    color: var(--header-text-color);
+    padding: var(--main-padding);
     text-align: center;
     margin-bottom: 40px;
 }
@@ -76,7 +90,6 @@ header h1 {
     font-size: 2.5rem;
 }
 
-/* Content and paragraph styles */
 .content, .user-list, .form-container, .login-container {
     text-align: center;
 }
@@ -86,11 +99,10 @@ p {
     font-size: 1.2rem;
 }
 
-/* List styles */
 .user-list {
     max-width: 600px;
     margin: 30px auto;
-    padding: 20px;
+    padding: var(--main-padding);
     background-color: #ffffff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -98,8 +110,8 @@ p {
 
 .user-list h2 {
     font-size: 1.5rem;
-    color: #333;
-    border-bottom: 2px solid #007bff;
+    color: var(--main-text-color);
+    border-bottom: 2px solid var(--header-bg-color);
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
@@ -111,10 +123,15 @@ ul {
 li {
     padding: 10px;
     border-bottom: 1px solid #ccc;
+    transition: background-color 0.3s ease;
 }
 
 li:last-child {
     border-bottom: none;
+}
+
+li:hover {
+    background-color: #f9f9f9;
 }
 
 /* Form styles */
@@ -138,14 +155,14 @@ input[type="submit"] {
 }
 
 input[type="submit"] {
-    background-color: #007bff;
-    color: white;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 input[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: var(--button-hover-bg-color);
 }
 
 /* Label styles */
@@ -170,8 +187,8 @@ label {
 
 /* Button styles */
 .button, .logout-button, .remove-account-btn, .delete-expense, .remove-button {
-    background-color: #007bff; /* Light blue background */
-    color: white;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
     border: none;
     border-radius: 5px;
     padding: 10px 15px;
@@ -184,37 +201,60 @@ label {
 
 /* Button hover states */
 .button:hover, .logout-button:hover, .remove-account-btn:hover, .delete-expense:hover, .remove-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: var(--button-hover-bg-color);
 }
 
 /* Red button styles */
 .logout-button, .remove-account-btn, .delete-expense, .remove-button {
-    background-color: #ff4d4d; /* Red background */
+    background-color: var(--danger-button-bg-color);
 }
 
 /* Red button hover states */
 .logout-button:hover, .remove-account-btn:hover, .delete-expense:hover, .remove-button:hover {
-    background-color: #cc0000; /* Darker red on hover */
+    background-color: var(--danger-button-hover-bg-color);
+}
+:root {
+    --footer-padding: 20px;
+    --footer-button-gap: 20px;
+    --button-padding: 10px 20px;
+    --button-border-radius: 5px;
+    --button-font-size: 16px;
+    --danger-button-bg-color: #ff4d4d;
+    --danger-button-hover-bg-color: #cc0000;
+    --table-width: 100%;
+    --table-cell-padding: 8px;
+    --table-header-bg-color: #007bff;
+    --table-header-text-color: #ffffff;
+    --table-row-hover-bg-color: #ddd;
+    --chat-bubble-max-width: 300px;
+    --chat-bubble-padding: 20px;
+    --chat-bubble-bg-color: linear-gradient(to right, #ffffff 0%, #f9f9f9 100%);
+    --chat-bubble-border: 1px solid #e6e6e6;
+    --chat-bubble-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    --chat-bubble-border-radius: 8px;
+    --chat-bubble-font-size: 1.2rem;
+    --chat-bubble-line-height: 1.5;
+    --chat-bubble-letter-spacing: 0.025em;
 }
 
 /* Footer styles */
 footer {
     text-align: center;
-    padding: 20px; /* Add padding for visual spacing */
+    padding: var(--footer-padding);
 }
 
 .footer-buttons {
     display: flex;
-    justify-content: center; /* This will center the buttons */
-    align-items: center; /* Align items vertically */
-    gap: 20px; /* Adjust the gap between buttons as needed */
+    justify-content: center;
+    align-items: center;
+    gap: var(--footer-button-gap);
 }
 
 .button {
-    padding: 10px 20px;
+    padding: var(--button-padding);
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: var(--button-border-radius);
+    font-size: var(--button-font-size);
     cursor: pointer;
     transition: background-color 0.3s;
     text-decoration: none;
@@ -222,39 +262,67 @@ footer {
 
 /* Style for logout and remove account buttons */
 .logout-button, .remove-account-btn {
-    background-color: #ff4d4d; /* Red background */
+    background-color: var(--danger-button-bg-color);
     color: white;
-    margin: 0; /* Remove margins if any */
+    margin: 0;
 }
 
 .logout-button:hover, .remove-account-btn:hover {
-    background-color: #cc0000; /* Darker red on hover */
+    background-color: var(--danger-button-hover-bg-color);
 }
-
 
 /* Style the table with a basic design */
 table {
-    width: 100%;
+    width: var(--table-width);
     border-collapse: collapse;
-  }
-  
-  th, td {
+}
+
+th, td {
     text-align: left;
-    padding: 8px;
-  }
-  
-  th {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  tr:nth-child(even) {
+    padding: var(--table-cell-padding);
+}
+
+th {
+    background-color: var(--table-header-bg-color);
+    color: var(--table-header-text-color);
+}
+
+tr:nth-child(even) {
     background-color: #f2f2f2;
-  }
-  
-  tr:hover {
-    background-color: #ddd;
-  }
-  
-  /* Add any other styles that were originally present for the table */
-  
+}
+
+tr:hover {
+    background-color: var(--table-row-hover-bg-color);
+}
+
+/* Chat bubble styles */
+.chat-bubble {
+    max-width: var(--chat-bubble-max-width);
+    margin: 20px auto;
+    padding: var(--chat-bubble-padding);
+    background: var(--chat-bubble-bg-color);
+    border: var(--chat-bubble-border);
+    box-shadow: var(--chat-bubble-shadow);
+    border-radius: var(--chat-bubble-border-radius);
+    position: relative;
+    font-size: var(--chat-bubble-font-size);
+    line-height: var(--chat-bubble-line-height);
+    letter-spacing: var(--chat-bubble-letter-spacing);
+    animation: fadeIn 0.3s ease-in;
+}
+
+.chat-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -10px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #ffffff transparent;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

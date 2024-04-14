@@ -10,7 +10,8 @@ from datetime import datetime
 
 app = Flask(__name__)
 # The default URI will be used if the 'MONGO_URI' environment variable is not set
-default_mongo_uri = "mongodb://host.docker.internal:27017/"  # Default for kind cluster
+default_mongo_uri = "mongodb://localhost:27017/expenses_tracker_db" 
+ # Default for kind cluster
 app.secret_key = os.getenv('SECRET_KEY', 'your_fallback_secret_key_here')
 bcrypt = Bcrypt(app)
 
@@ -20,6 +21,20 @@ client = MongoClient(mongo_uri)
 db = client["expenses_tracker_db"]
 users_collection = db["users"]
 expenses_collection = db["expenses"]  # Define the expenses collection
+
+@app.route('/test')
+def test():
+    return 'This is a test page'
+
+@app.route('/test_db')
+def test_db():
+    try:
+        # Try to fetch a user from the database
+        user = users_collection.find_one()
+        return f"User: {user}"
+    except Exception as e:
+        # If an error occurs, return the error message
+        return str(e)
 
 @app.route('/')
 def home():
@@ -98,6 +113,11 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('home'))
 
+@app.route('/expenses')
+def get_expenses():
+    month = request.args.get('month')
+    # Fetch and return the expenses for the given month
+
 @app.route('/add_expense', methods=['GET', 'POST'])
 def add_expense():
     if 'username' not in session:
@@ -160,17 +180,31 @@ def expense_data_by_category():
     if not user_id:
         return jsonify({'error': 'User not found'}), 404
 
+    # Get the current year and month
+    current_year = datetime.now().year
+    current_month = datetime.now().month
+
     pipeline = [
-        {"$match": {"user_id": ObjectId(user_id)}},
+        {"$match": {
+            "user_id": ObjectId(user_id),
+            "date": {
+                "$gte": datetime(current_year, current_month, 1),
+                "$lt": datetime(current_year, current_month+1, 1)
+            }
+        }},
         {"$group": {
             "_id": "$category",
             "total": {"$sum": "$amount"}
         }},
-        {"$project": {"_id": 0, "category": "$_id", "total": 1}},
+        {"$project": {
+            "category": "$_id",
+            "total": 1,
+            "_id": 0
+        }},
         {"$sort": {"total": -1}}
     ]
     expenses_by_category = list(expenses_collection.aggregate(pipeline))
-    return Response(dumps(expenses_by_category), mimetype='application/json')
+    return jsonify(expenses_by_category)
 
 @app.route('/remove_expense/<expense_id>', methods=['POST'])
 def remove_expense(expense_id):
@@ -207,6 +241,27 @@ def remove_account():
         flash('You need to be logged in to remove an account.', 'error')
         return redirect(url_for('login'))
 
+@app.route('/get_recommendation', methods=['GET'])
+def get_recommendation():
+    user_id = session['user_id']
+    now = datetime.now()
+    year, month = now.year, now.month
+
+    monthly_expenses = get_monthly_expenses_by_category(user_id, year, month)
+    average_expenses = get_average_expenses_by_category(user_id, year, month)
+
+    recommendations = []
+    for expense in monthly_expenses:
+        category = expense['_id']
+        total = expense['total']
+        average = next((e['average'] for e in average_expenses if e['_id'] == category), 0)
+
+        if total > average:
+            recommendations.append(f"You're spending more than usual on {category}. Try to cut back.")
+        elif total < average:
+            recommendations.append(f"You're doing a great job of keeping your {category} expenses down!")
+
+    return jsonify(recommendations)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
